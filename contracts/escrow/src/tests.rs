@@ -59,7 +59,13 @@ mod tests {
 
     fn setup_with_admin(
         env: &Env,
-    ) -> (Address, Address, Address, Vec<Address>, EscrowContractClient) {
+    ) -> (
+        Address,
+        Address,
+        Address,
+        Vec<Address>,
+        EscrowContractClient,
+    ) {
         let admin = Address::generate(env);
         let creator = Address::generate(env);
         let token = Address::generate(env);
@@ -666,7 +672,10 @@ mod tests {
 
         let description_hash = BytesN::from_array(&env, &[1u8; 32]);
         let result = client.try_create_milestone(&1, &description_hash, &500);
-        assert!(result.is_err(), "create_milestone should be blocked when paused");
+        assert!(
+            result.is_err(),
+            "create_milestone should be blocked when paused"
+        );
     }
 
     #[test]
@@ -683,7 +692,10 @@ mod tests {
 
         let proof_hash = BytesN::from_array(&env, &[9u8; 32]);
         let result = client.try_submit_milestone(&1, &0, &proof_hash);
-        assert!(result.is_err(), "submit_milestone should be blocked when paused");
+        assert!(
+            result.is_err(),
+            "submit_milestone should be blocked when paused"
+        );
     }
 
     #[test]
@@ -702,7 +714,10 @@ mod tests {
 
         let voter = validators.get(0).unwrap();
         let result = client.try_vote_milestone(&1, &0, &voter, &true);
-        assert!(result.is_err(), "vote_milestone should be blocked when paused");
+        assert!(
+            result.is_err(),
+            "vote_milestone should be blocked when paused"
+        );
     }
 
     #[test]
@@ -716,7 +731,10 @@ mod tests {
 
         env.ledger().set_timestamp(1000 + 3600);
         let result = client.try_resume(&admin);
-        assert!(result.is_err(), "resume should fail before time delay expires");
+        assert!(
+            result.is_err(),
+            "resume should fail before time delay expires"
+        );
     }
 
     #[test]
@@ -821,9 +839,13 @@ mod tests {
         let wasm_hash = BytesN::from_array(&env, &[42u8; 32]);
         client.schedule_upgrade(&admin, &wasm_hash);
 
-        env.ledger().set_timestamp(1000 + shared::UPGRADE_TIME_LOCK_SECS + 1);
+        env.ledger()
+            .set_timestamp(1000 + shared::UPGRADE_TIME_LOCK_SECS + 1);
         let result = client.try_execute_upgrade(&admin);
-        assert!(result.is_err(), "execute_upgrade should fail when not paused");
+        assert!(
+            result.is_err(),
+            "execute_upgrade should fail when not paused"
+        );
     }
 
     #[test]
